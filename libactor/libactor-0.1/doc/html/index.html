@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>libactor documentation &mdash; libactor v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="libactor v0.1 documentation" href="" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="">libactor v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="libactor-documentation">
+<h1>libactor documentation<a class="headerlink" href="#libactor-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><em>libactor</em> is a simple C library that helps you build an application based on the Actor model. It is currently not supported on Windows. Any Linux/BSD should be fine, as long as it supports <em>pthreads</em>.</p>
+<p>The library works great, but one caveat is that if one actor crashes &#8211; they all fall down. In a future release there will be sandboxing of each actor to provide better reliability.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>Once you have installed libactor, you just have to link it to your application with the flag <em>-lactor</em>.</p>
+<p>You must include <tt class="docutils literal"><span class="pre">&lt;libactor/actor.h&gt;</span></tt> in your project as well.</p>
+<div class="section" id="data-types">
+<h3>Data Types<a class="headerlink" href="#data-types" title="Permalink to this headline">¶</a></h3>
+<dl class="ctype">
+<dt id="actor_id">
+typedef long <tt class="descname">actor_id</tt><a class="headerlink" href="#actor_id" title="Permalink to this definition">¶</a></dt>
+<dd>An integer that refers to a unique actor&#8217;s ID.</dd></dl>
+
+<dl class="ctype">
+<dt id="actor_msg_t">
+<tt class="descname">actor_msg_t</tt><a class="headerlink" href="#actor_msg_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>This structure contains information about a message. The following fields are available:</p>
+<dl class="cmember">
+<dt id="sender">
+<tt class="descname">sender</tt><a class="headerlink" href="#sender" title="Permalink to this definition">¶</a></dt>
+<dd>The <a title="actor_id" class="reference internal" href="#actor_id"><tt class="xref docutils literal"><span class="pre">actor_id</span></tt></a> of the actor who sent the message.</dd></dl>
+
+<dl class="cmember">
+<dt id="data">
+<tt class="descname">data</tt><a class="headerlink" href="#data" title="Permalink to this definition">¶</a></dt>
+<dd>A <tt class="xref docutils literal"><span class="pre">void*</span></tt> to the message data.</dd></dl>
+
+<dl class="cmember">
+<dt id="size">
+<tt class="descname">size</tt><a class="headerlink" href="#size" title="Permalink to this definition">¶</a></dt>
+<dd>The size of the data.</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="Permalink to this headline">¶</a></h3>
+<dl class="cfunction">
+<dt id="DECLARE_ACTOR_MAIN">
+<tt class="descname">DECLARE_ACTOR_MAIN</tt><big>(</big>fun<big>)</big><a class="headerlink" href="#DECLARE_ACTOR_MAIN" title="Permalink to this definition">¶</a></dt>
+<dd>This macro should be used in your main file. <em>fun</em> should be a function declared with the <a title="ACTOR_FUNCTION" class="reference internal" href="#ACTOR_FUNCTION"><tt class="xref docutils literal"><span class="pre">ACTOR_FUNCTION</span></tt></a>. This actor will be executed when the application starts.</dd></dl>
+
+<dl class="cfunction">
+<dt id="ACTOR_FUNCTION">
+<tt class="descname">ACTOR_FUNCTION</tt><big>(</big>name, args<big>)</big><a class="headerlink" href="#ACTOR_FUNCTION" title="Permalink to this definition">¶</a></dt>
+<dd>This macro is used to declare an actor. <em>name</em> is the name of the function, and <em>args</em> is any arguments passed to the actor as a <tt class="xref docutils literal"><span class="pre">void*</span></tt></dd></dl>
+
+</div>
+<div class="section" id="actor-management">
+<h3>Actor Management<a class="headerlink" href="#actor-management" title="Permalink to this headline">¶</a></h3>
+<dl class="cfunction">
+<dt id="spawn_actor">
+<a title="actor_id" class="reference internal" href="#actor_id">actor_id</a> <tt class="descname">spawn_actor</tt><big>(</big>ACTOR_FUNCTION_PTR(func), void<em> *args</em><big>)</big><a class="headerlink" href="#spawn_actor" title="Permalink to this definition">¶</a></dt>
+<dd>This functions spawns a new actor, the first argument should be the name of an actor created with <a title="ACTOR_FUNCTION" class="reference internal" href="#ACTOR_FUNCTION"><tt class="xref docutils literal"><span class="pre">ACTOR_FUNCTION</span></tt></a>. The second argument is passed to the actor when it is spawned. The <em>actor_id</em> is returned to the caller.</dd></dl>
+
+<dl class="cfunction">
+<dt id="actor_self">
+<a title="actor_id" class="reference internal" href="#actor_id">actor_id</a> <tt class="descname">actor_self</tt><big>(</big><big>)</big><a class="headerlink" href="#actor_self" title="Permalink to this definition">¶</a></dt>
+<dd>Returns the current actor&#8217;s id.</dd></dl>
+
+<dl class="cfunction">
+<dt id="actor_trap_exit">
+void <tt class="descname">actor_trap_exit</tt><big>(</big>int<em> action</em><big>)</big><a class="headerlink" href="#actor_trap_exit" title="Permalink to this definition">¶</a></dt>
+<dd>By setting <em>action</em> to 1, trap exit is enabled. This means that when you spawn an actor, when it exits, you will receive a <tt class="xref docutils literal"><span class="pre">ACTOR_MSG_EXITED</span></tt> message. This is good if you want to monitor any actors that you have spawned.</dd></dl>
+
+</div>
+<div class="section" id="messaging">
+<h3>Messaging<a class="headerlink" href="#messaging" title="Permalink to this headline">¶</a></h3>
+<p>When sending a message, the <em>type</em> should be greater than 100, (anything below that may be used by the library).</p>
+<dl class="cfunction">
+<dt id="actor_send_msg">
+void <tt class="descname">actor_send_msg</tt><big>(</big><a title="actor_id" class="reference internal" href="#actor_id">actor_id</a><em> aid</em>, long<em> type</em>, void<em> *data</em>, size_t<em> size</em><big>)</big><a class="headerlink" href="#actor_send_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a message to an actor. <em>type</em> is a user defined value. <em>data</em> is a pointer to a block of data that will be sent to the actor.</p>
+<p><strong>Note</strong>: The data is copied before being sent to the actor. If you are passing a structure, make sure that it doesn&#8217;t contain any pointers to memory, as this can cause a crash. <em>data</em> should be a complete message, see <a class="reference internal" href="#memory-management"><em>Memory Management</em></a>.</p>
+</dd></dl>
+
+<dl class="cfunction">
+<dt id="actor_broadcast_msg">
+void <tt class="descname">actor_broadcast_msg</tt><big>(</big>long<em> type</em>, void<em> *data</em>, size_t<em> size</em><big>)</big><a class="headerlink" href="#actor_broadcast_msg" title="Permalink to this definition">¶</a></dt>
+<dd>Broadcasts a message to all actors.</dd></dl>
+
+<dl class="cfunction">
+<dt id="actor_reply_msg">
+void <tt class="descname">actor_reply_msg</tt><big>(</big><a title="actor_msg_t" class="reference internal" href="#actor_msg_t">actor_msg_t</a><em> *a</em>, long<em> type</em>, void<em> *data</em>, size_t<em> size</em><big>)</big><a class="headerlink" href="#actor_reply_msg" title="Permalink to this definition">¶</a></dt>
+<dd>Reply to a received message.</dd></dl>
+
+<dl class="cfunction">
+<dt id="actor_receive">
+<a title="actor_msg_t" class="reference internal" href="#actor_msg_t">actor_msg_t</a> *<tt class="descname">actor_receive</tt><big>(</big><big>)</big><a class="headerlink" href="#actor_receive" title="Permalink to this definition">¶</a></dt>
+<dd>Receives a message from the actor&#8217;s mailbox.</dd></dl>
+
+<dl class="cfunction">
+<dt id="actor_receive_timeout">
+<a title="actor_msg_t" class="reference internal" href="#actor_msg_t">actor_msg_t</a> *<tt class="descname">actor_receive_timeout</tt><big>(</big>long<em> timeout</em><big>)</big><a class="headerlink" href="#actor_receive_timeout" title="Permalink to this definition">¶</a></dt>
+<dd>Same as <a title="actor_receive" class="reference internal" href="#actor_receive"><tt class="xref docutils literal"><span class="pre">actor_receive()</span></tt></a>, but let&#8217;s you specify a timeout (in milliseconds).</dd></dl>
+
+</div>
+<div class="section" id="memory-management">
+<span id="id1"></span><h3>Memory Management<a class="headerlink" href="#memory-management" title="Permalink to this headline">¶</a></h3>
+<p><em>libactor</em> uses pthreads for concurrency. If you allocate memory with <tt class="xref docutils literal"><span class="pre">malloc()</span></tt> and pass a pointer or try to access the memory in a different actor, your application may crash. Therefore, if you plan to send a message to another actor, make sure that the message is complete(no pointers, only raw data). See <a class="reference internal" href="#memory-example"><em>Example</em></a>.</p>
+<p><em>libactor</em> provides some convenience functions for managing memory. Please use these in your actors. Reference counting is used to manage memory. When an actor exits, any unfreed memory will be automatically freed. (But you should still release anything you are not using).</p>
+<dl class="cfunction">
+<dt id="amalloc">
+void *<tt class="descname">amalloc</tt><big>(</big>size_t<em> size</em><big>)</big><a class="headerlink" href="#amalloc" title="Permalink to this definition">¶</a></dt>
+<dd>Allocates a block of memory for an actor.</dd></dl>
+
+<dl class="cfunction">
+<dt id="arelease">
+void <tt class="descname">arelease</tt><big>(</big>void<em> *block</em><big>)</big><a class="headerlink" href="#arelease" title="Permalink to this definition">¶</a></dt>
+<dd>Call this function to release the memory. The reference count is decremented. When it reaches 0, the actual memory is freed.</dd></dl>
+
+<dl class="cfunction">
+<dt id="aretain">
+void <tt class="descname">aretain</tt><big>(</big>void<em> *block</em><big>)</big><a class="headerlink" href="#aretain" title="Permalink to this definition">¶</a></dt>
+<dd>Retains a block of memory. Use this to hold on to a block of memory. The reference count is incremented.</dd></dl>
+
+<div class="section" id="example">
+<span id="memory-example"></span><h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<p>This is okay:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">user</span> <span class="p">{</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">username</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">status</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">user</span> <span class="n">usermsg</span><span class="p">;</span>
+
+<span class="c">// initialize usermsg here</span>
+
+<span class="n">actor_send_msg</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">usermsg</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">user</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>This is bad:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">usr_login_info</span> <span class="p">{</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">username</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">user</span> <span class="p">{</span>
+        <span class="k">struct</span> <span class="n">usr_login_info</span> <span class="o">*</span><span class="n">info</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">status</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">user</span> <span class="n">usermsg</span><span class="p">;</span>
+
+<span class="c">// initialize usermsg here</span>
+
+<span class="n">actor_send_msg</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">usermsg</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">user</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>In the bad example, the user struct will be copied, but the pointer to <em>info</em> may then be accessed by multiple actors.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="ping-pong-actor-example">
+<h1>Ping/Pong Actor Example<a class="headerlink" href="#ping-pong-actor-example" title="Permalink to this headline">¶</a></h1>
+<p>Below is a simple example of how to use the actor library. One actor will be spawned which will then spawn another actor, send it a ping message, and loop.</p>
+<p>main.c:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="cp">#include &lt;stdio.h&gt;</span>
+<span class="cp">#include &lt;libactor/actor.h&gt;</span>
+
+<span class="n">ACTOR_FUNCTION</span><span class="p">(</span><span class="n">pong_func</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">actor_msg_t</span> <span class="o">*</span><span class="n">msg</span><span class="p">;</span>
+
+        <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">actor_receive</span><span class="p">();</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">==</span> <span class="n">PING_MSG</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;PING! &quot;</span><span class="p">);</span>
+                        <span class="n">actor_reply_msg</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">PONG_MSG</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="n">arelease</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+        <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">ACTOR_FUNCTION</span><span class="p">(</span><span class="n">ping_func</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">actor_msg_t</span> <span class="o">*</span><span class="n">msg</span><span class="p">;</span>
+        <span class="n">actor_id</span> <span class="n">aid</span> <span class="o">=</span> <span class="n">spawn_actor</span><span class="p">(</span><span class="n">pong_func</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+        <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">actor_send_msg</span><span class="p">(</span><span class="n">aid</span><span class="p">,</span> <span class="n">PING_MSG</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">actor_receive</span><span class="p">();</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">==</span> <span class="n">PONG_MSG</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;PONG!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+                <span class="n">arelease</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+                <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+        <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="n">ACTOR_FUNCTION</span><span class="p">(</span><span class="n">main_func</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">struct</span> <span class="n">actor_main</span> <span class="o">*</span><span class="n">main</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">actor_main</span><span class="o">*</span><span class="p">)</span><span class="n">args</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+
+        <span class="c">/* Accessing the arguments passed to the application */</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Number of arguments: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">main</span><span class="o">-&gt;</span><span class="n">argc</span><span class="p">);</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">main</span><span class="o">-&gt;</span><span class="n">argc</span><span class="p">;</span> <span class="n">x</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Argument: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">main</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="n">x</span><span class="p">]);</span>
+
+        <span class="c">/* PING/PONG example */</span>
+        <span class="n">spawn_actor</span><span class="p">(</span><span class="n">ping_func</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">libactor documentation</a><ul>
+<li><a class="reference external" href="#introduction">Introduction</a></li>
+<li><a class="reference external" href="#api">API</a><ul>
+<li><a class="reference external" href="#data-types">Data Types</a></li>
+<li><a class="reference external" href="#macros">Macros</a></li>
+<li><a class="reference external" href="#actor-management">Actor Management</a></li>
+<li><a class="reference external" href="#messaging">Messaging</a></li>
+<li><a class="reference external" href="#memory-management">Memory Management</a><ul>
+<li><a class="reference external" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#ping-pong-actor-example">Ping/Pong Actor Example</a></li>
+</ul>
+
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="">libactor v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Chris Moos.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>
