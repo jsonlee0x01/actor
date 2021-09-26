@@ -1,0 +1,14 @@
+*.beam
+*.class
+*.dat
+*.dump
+*.png
+*.tmp
+.DS_Store
+callgrind.out*
+cppa.creator.user
+html/
+libcppa.pc
+bin/*
+build/*
+lib/*
